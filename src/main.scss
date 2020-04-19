@@ -1,0 +1,277 @@
+$theme_color:#2195f3;
+
+$success_green:#47C464;
+$fail_red:#FE5D5D;
+$warn_yellow:#FF8F39;
+$common_blue: #2195f3;
+$disable:#898183;
+
+$disable_bg: #F7F8F9;
+$disable_c:#B3B9C1;
+$readOnly_c:#787E85;
+$readOnly_bg:#F7F8F9;
+//shadow
+$shadow_color: 0 1px 3px 0 #D4D8DB;
+//paper
+$paper_color: #fff;
+
+// Gobal
+$w_space: -5px;
+
+// input
+// $input_border_color: #F6F8F9;
+$input_outline_color: #5DA4FF;
+$input_radius: 2px;
+$input_fs: 12px;
+// $placeholder_b: #F6F8F9; //input 级别的提示
+$placeholder_fs: 12px;
+// $checkbox_default_bg:#F6F8F9;
+$checkbox_default_c: inherit;
+$checkbox_focus_bg: $theme_color;
+$checkbox_focus_c: inherit;
+// $select_hover_color:#fff;
+
+// btn
+$hoverWaveColor: $theme_color;
+$btn_radius: 3px;
+$btn_action_radius: 50px;
+$btn_fs: 12px;
+
+// table
+$table_odd_bg: #F6F8F9;
+$table_header_bg: #fff;
+$table_header_c: #787E85;
+$table_header_fs: 14px;
+$table_hover: #E8EBED;
+
+// $tab_top_color:#111111;
+$tab_active_color:$theme_color;
+
+@import "slucky/lib/sass/normal.scss";
+
+$base-typing-speed: 300ms;
+$code-typing-animation-duration: 1200ms;
+
+.l-content {
+    position: relative;
+}
+
+.l-container {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#bongo-cat {
+    position: absolute;
+    height: 20vh;
+    width: 20vw;
+    top: 100vh;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.typing-animation {
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: $code-typing-animation-duration;
+}
+
+@for $line from 1 through 9 {
+    $fn-group: ceil($line / 3);
+
+    path#f#{$fn-group}-l#{$line} {
+        animation-name: typing-f#{$fn-group}-l#{$line}
+    }
+}
+
+@keyframes typing-f3-l9 {
+    0% {
+        d: path('M8,25L8,25')
+    }
+
+    82% {
+        d: path('M8,25L8,25')
+    }
+
+    92% {
+        d: path('M8,25L96,25')
+    }
+
+    100% {
+        d: path('M8,25L96,25')
+    }
+}
+
+@keyframes typing-f3-l8 {
+    0% {
+        d: path('M8,13L8,13')
+    }
+
+    68% {
+        d: path('M8,13L8,13')
+    }
+
+    82% {
+        d: path('M8,13L146,13')
+    }
+
+    100% {
+        d: path('M8,13L146,13')
+    }
+}
+
+@keyframes typing-f3-l7 {
+    0% {
+        d: path('M0,1L0,1')
+    }
+
+    60% {
+        d: path('M0,1L0,1')
+    }
+
+    68% {
+        d: path('M0,1L96,1')
+    }
+
+    100% {
+        d: path('M0,1L96,1')
+    }
+}
+
+@keyframes typing-f2-l6 {
+    0% {
+        d: path('M8,25L8,25')
+    }
+
+    54% {
+        d: path('M8,25L8,25')
+    }
+
+    60% {
+        d: path('M8,25L69,25')
+    }
+
+    100% {
+        d: path('M8,25L69,25')
+    }
+}
+
+@keyframes typing-f2-l5 {
+    0% {
+        d: path('M8,13L8,13')
+    }
+
+    44% {
+        d: path('M8,13L8,13')
+    }
+
+    54% {
+        d: path('M8,13L114,13')
+    }
+
+    100% {
+        d: path('M8,13L114,13')
+    }
+}
+
+@keyframes typing-f2-l4 {
+    0% {
+        d: path('M0,1L0,1')
+    }
+
+    30% {
+        d: path('M0,1L0,1')
+    }
+
+    44% {
+        d: path('M0,1L136,1')
+    }
+
+    100% {
+        d: path('M0,1L136,1')
+    }
+}
+
+@keyframes typing-f1-l3 {
+    0% {
+        d: path('M8,25L8,25')
+    }
+
+    24% {
+        d: path('M8,25L8,25')
+    }
+
+    30% {
+        d: path('M8,25L61,25')
+    }
+
+    100% {
+        d: path('M8,25L61,25')
+    }
+}
+
+@keyframes typing-f1-l2 {
+    0% {
+        d: path('M8,13L8,13')
+    }
+
+    14% {
+        d: path('M8,13L8,13')
+    }
+
+    24% {
+        d: path('M8,13L124,13')
+    }
+
+    100% {
+        d: path('M8,13L124,13')
+    }
+}
+
+@keyframes typing-f1-l1 {
+    0% {
+        d: path('M0,1L0,1')
+    }
+
+    14% {
+        d: path('M0,1L160,1')
+    }
+
+    100% {
+        d: path('M0,1L160,1')
+    }
+}
+
+#paw-right--up,
+#paw-right--down,
+#paw-left--up,
+#paw-left--down {
+    animation: blink $base-typing-speed infinite;
+}
+
+#paw-right--up,
+#paw-left--down {
+    animation-delay: $base-typing-speed/2;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+
+    49% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+#laptop__code {
+    transform: rotateX(-37deg) rotateY(-46deg) rotateZ(-23deg) translateX(8px) translateY(20px) translateZ(-50px);
+}

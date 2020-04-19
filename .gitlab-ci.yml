@@ -1,0 +1,21 @@
+# stages:
+#   - build
+
+# build-dev:
+#   stage: build
+#   script:
+#     - npm run build
+#   cache:
+#     paths:
+#       - node_modules
+
+deploy_dev:
+  stage: build
+  script:
+    - echo "okok Start Check Eros Config ..."
+    - node -v
+    - npm -v
+  when: manual
+  tags:
+    - sluckyRunner
+    

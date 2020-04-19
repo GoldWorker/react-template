@@ -1,0 +1,28 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "modules": false,
+                // 只包含你所需要的 polyfill
+                "corejs": "3",
+                "useBuiltIns": "usage",
+            }
+        ],
+        "@babel/preset-react",
+    ],
+    "plugins": [
+        ["import", {
+            "libraryName": "slucky",
+            "libraryDirectory": "/lib/component",
+        }, "slucky"],
+        ["import", {
+            "libraryName": "antd",
+            "libraryDirectory": "es"
+        }, "antd"],
+        "@babel/plugin-proposal-class-properties",
+        "@babel/transform-runtime",
+        "@babel/plugin-syntax-dynamic-import", //用以解析识别import()动态导入语法---并非转换，而是解析识别
+        "react-hot-loader/babel"
+    ]
+}
