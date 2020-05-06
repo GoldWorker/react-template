@@ -2,7 +2,6 @@ const common = require('./webpack.common');
 const devConfig = require('./webpack.dev');
 const proConfig = require('./webpack.prod');
 const qaConfig = require('./webpack.qa');
-const testConfig = require('./webpack.test');
 //webpack性能分析工具
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const smp = new SpeedMeasurePlugin({
@@ -15,8 +14,6 @@ module.exports = function(env, arg) {
         return Object.assign({}, common, devConfig, );
     }
     switch (env) {
-        case 'test':
-            return Object.assign({}, common, testConfig);
         case 'qa':
             return Object.assign({}, common, qaConfig);
         case 'pro':

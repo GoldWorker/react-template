@@ -19,6 +19,7 @@ module.exports = {
         node: true,
         es6: true,
         mocha: true,
+        jest: true,
         'jsx-control-statements/jsx-control-statements': true
     },
     globals: {

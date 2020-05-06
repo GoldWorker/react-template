@@ -5,6 +5,7 @@ interface ValidatorBase {
     validate(data: Record<string, any>): ValidatorResult,
     validateItem(item: string, val: any): ValidationResultBase | undefined,
     isSubmit(data: Record<string, any>): boolean,
+    formatError(type: string, sign: string): string,
     clear(): void
 }
 
@@ -83,7 +84,7 @@ export default class Validator implements ValidatorBase {
     }
 
     // 结果格式化
-    public formatRes(type: string, sign = ','): string {
+    public formatError(type: string, sign = ','): string {
         return this.result[type] && this
             .result[type]
             .message
@@ -106,7 +107,7 @@ Validator.types.isEmpty = {
 
 Validator.types.isArrayEmpty = {
     validate(value: any[]) {
-        return value.length !== 0;
+        return Array.isArray(value) && value.length !== 0;
     },
     desc: '请选择'
 };

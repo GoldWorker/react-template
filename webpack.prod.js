@@ -1,7 +1,7 @@
 const path = require('path');
-const ExtractTextWebapckPlugin = require('extract-text-webpack-plugin');
+// const ExtractTextWebapckPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const sassExtract = new ExtractTextWebapckPlugin('./slucky.css');
+// const sassExtract = new ExtractTextWebapckPlugin('./slucky.css');
 const UglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');

@@ -9,6 +9,7 @@
                 "useBuiltIns": "usage",
             }
         ],
+        // "@babel/preset-typescript",
         "@babel/preset-react",
     ],
     "plugins": [
@@ -24,5 +25,23 @@
         "@babel/transform-runtime",
         "@babel/plugin-syntax-dynamic-import", //用以解析识别import()动态导入语法---并非转换，而是解析识别
         "react-hot-loader/babel"
-    ]
+    ],
+    "env": {
+        "test": {
+            "presets": [
+                [
+                    "@babel/preset-env",
+                    {
+                        "modules": "auto"
+                    }
+                ],
+                "@babel/preset-react",
+                "@babel/preset-typescript",
+                // "jest"
+            ],
+            "plugins": [
+                "@babel/plugin-transform-runtime"
+            ]
+        }
+    }
 }

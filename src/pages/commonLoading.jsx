@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 export default class CommonLoading extends Component {
     render() {
@@ -8,6 +8,6 @@ export default class CommonLoading extends Component {
                     <div className="circle-core"></div>
                 </div>
             </div>
-        )
+        );
     }
 }
