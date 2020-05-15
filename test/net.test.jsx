@@ -8,6 +8,6 @@ const http = new RequestBase({
 
 describe('Net Tool', () => {
     it('should ', () => {
-        
+        expect(1+1).toBe(2);
     });
 });
