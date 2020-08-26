@@ -1,17 +1,18 @@
 import React, { Component, FC } from 'react';
 import { Route, RouteComponentProps } from 'react-router-dom';
-import { StaticContext } from 'react-router';
-import { History } from 'history';
 
-interface RouterBase {
+interface RouterInitState {
     config: Array<RouterConfig>,
+    loading: Component | FC | JSX.Element | HTMLElement | null,
+    BeforeEnter?: (to: RouteComponentProps, from: any) => void | Promise<any>,
+    Mounted?: (to: RouteComponentProps, from: any) => void | Promise<any>,
+    AfterEnter?: (to: RouteComponentProps, from: any) => void
+}
+
+interface RouterBase extends RouterInitState {
     handleConfig: (conf: RouterConfig[]) => RouterConfig[],
     render: () => JSX.Element[],
     createRouterComponent: (chunkFn: () => Promise<any>) => any,
-    loading: Component | FC | JSX.Element | HTMLElement | null,
-    BeforeEnter?: (to: RouteComponentProps, from: any) => void | Promise<any>,
-    BeforeWillEnter?: (to: RouteComponentProps, from: any) => void | Promise<any>,
-    AfterEnter?: (to: RouteComponentProps, from: any) => void
 }
 
 interface RouterConfig {
@@ -21,14 +22,14 @@ interface RouterConfig {
 
 interface RouterHandleConfig {
     path: string,
-    component: any
+    component: any,
+    meta?: Record<string, any>
 }
 
 interface IState {
     loading: boolean,
     Component: Component<any, any> | FC<any> | any
 }
-
 
 /**
  * 代码自动按路由分割、资源按需加载
@@ -47,7 +48,7 @@ export default class RouterCreate implements RouterBase {
      */
     public config: RouterConfig[] = []
 
-    public loading = null
+    public loading: Component | FC | JSX.Element | HTMLElement | null = null
 
     /**
      * 生命周期，加载路由前调用，支持返回Promise
@@ -62,7 +63,7 @@ export default class RouterCreate implements RouterBase {
      *
      * @memberof RouterCreate
      */
-    public BeforeWillEnter?: (to: RouteComponentProps) => void | Promise<any>
+    public Mounted?: (to: RouteComponentProps) => void | Promise<any>
 
     /**
      * 生命周期，进入路由后回调
@@ -70,6 +71,10 @@ export default class RouterCreate implements RouterBase {
      * @memberof RouterCreate
      */
     public AfterEnter?: (to: RouteComponentProps) => void
+
+    constructor(config: RouterInitState = { config: [], loading: null }) {
+        Object.assign(this, config);
+    }
 
     /**
      * 创建异步加载组件以及路由生命周期
@@ -80,7 +85,7 @@ export default class RouterCreate implements RouterBase {
      */
     createRouterComponent(chunkFn: () => Promise<any>): any {
         const BeforeEnter = this.BeforeEnter;
-        const BeforeWillEnter = this.BeforeWillEnter;
+        const Mounted = this.Mounted;
         const AfterEnter = this.AfterEnter;
         const Loading = this.loading;
         return class AsyncImportComponent extends Component<RouteComponentProps, IState> {
@@ -92,18 +97,20 @@ export default class RouterCreate implements RouterBase {
                 };
             }
 
-            componentDidMount() {
+            componentDidMount(): void {
                 this.setState({
                     loading: true
                 });
-                (async () => {
+                (async (): Promise<void> => {
                     BeforeEnter && await BeforeEnter(this.props);
                     const chunk = await chunkFn();
-                    BeforeWillEnter && await BeforeWillEnter(this.props);
+                    Mounted && await Mounted(this.props);
                     this.setState({
                         Component: chunk.default,
                         loading: false
                     });
+
+                    // 测试
                     // await new Promise((resolve) => {
                     //     setTimeout(() => {
                     //         chunkFn().then((chunk: any) => {
@@ -118,14 +125,14 @@ export default class RouterCreate implements RouterBase {
                 })();
             }
 
-            componentDidUpdate() {
+            componentDidUpdate(): void {
                 const { loading } = this.state;
                 if (!loading) {
                     AfterEnter && AfterEnter(this.props);
                 }
             }
 
-            render() {
+            render(): JSX.Element | null {
                 const { Component } = this.state;
                 return Component ? <Component {...this.props} /> : null;
             }
@@ -141,9 +148,9 @@ export default class RouterCreate implements RouterBase {
      */
     handleConfig(conf: RouterConfig[]): RouterHandleConfig[] {
         return conf.map(item => {
-            const { path, component } = item;
+            const { component } = item;
             return {
-                path,
+                ...item,
                 component: this.createRouterComponent(component)
             };
         });
@@ -161,7 +168,8 @@ export default class RouterCreate implements RouterBase {
                 <Route
                     key={i}
                     path={item.path}
-                    render={props =>
+                    {...item.meta}
+                    render={(props: any): JSX.Element =>
                         <item.component {...props} />
                     }
                 />

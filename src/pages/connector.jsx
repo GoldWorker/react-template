@@ -11,7 +11,8 @@ export default class Connector extends Component {
         super(props);
         this.state = {
             a: '',
-            b: 2
+            b: 2,
+            count: 0
         };
         this.fileUpload = new NetFile({
             url: 'http://localhost:3000'
@@ -25,7 +26,7 @@ export default class Connector extends Component {
             desc: 'test'
         };
         this.Validator.config = {
-            a: ['isEmptyTest','isName']
+            a: ['isEmptyTest', 'isName']
         };
     }
 
@@ -40,18 +41,50 @@ export default class Connector extends Component {
     }
 
     handleClick = () => {
-        this.Validator.isSubmit(this.state);
-        console.log(this.Validator.result);
+        const count = this.state.count + 1;
+        this.setState({
+            count
+        });
+        // this.Validator.isSubmit(this.state);
+        // console.log(this.Validator.result);
     }
 
 
     render() {
-
         return (
             <div>
+                <Child />
                 <button onClick={this.handleClick}>test</button>
                 <input type="file" name="" id="" onChange={this.handleChangeFile} />
             </div>
         );
     }
 }
+
+class Child extends Component {
+    componentDidUpdate() {
+        console.log('componentDidUpdate');
+    }
+    render() {
+        return (
+            <div>
+                123
+                <Child1 />
+            </div>
+        );
+    }
+}
+
+class Child1 extends Component {
+    componentDidUpdate() {
+        console.log('componentDidUpdate');
+    }
+    render() {
+        return (
+            <div>
+                123
+            </div>
+        );
+    }
+}
+
