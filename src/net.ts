@@ -1,6 +1,27 @@
 import fetch from 'isomorphic-fetch';
 // https://www.cnblogs.com/wonyun/p/fetch_polyfill_timeout_jsonp_cookie_progress.html
 
+// 容错Polyfill
+// const retry = function (fun, maxTime = 3) {
+//     let con = 0;
+//     const exeF = () => {
+//         return new Promise((resolve, reject) => {
+//             console.log(con);
+//             resolve(fun());
+//         }).then(res => {
+//             Promise.resolve(res);
+//         }).catch(err => {
+//             con++;
+//             if (con >= maxTime) {
+//                 return Promise.reject(err);
+//             }
+//             return exeF();
+//         });
+//     };
+//     return exeF();
+// };
+// retry(()=>{console.log('ok',a);}).then(res=>console.log(res)).catch(err=>console.log(err));
+
 enum Credentials {
     default = 'omit',
     sameOrigin = 'same-origin',
@@ -19,6 +40,7 @@ interface DefaultOption {
     baseUrlMap: Record<string, any>,
     handers: Record<string, any>,
     timeout: number,
+    retryCount: number,
     withCredentials: Credentials
 }
 
@@ -27,6 +49,7 @@ interface SetOption {
     baseUrlMap?: Record<string, any>,
     handers?: Record<string, any>,
     timeout?: number,
+    retryCount?: number,
     withCredentials?: Credentials
 }
 
@@ -40,7 +63,8 @@ interface RequestOption {
 interface Interceptor {
     request?(config?: DefaultOption): DefaultOption,
     response?(config?: DefaultOption): DefaultOption,
-    timeout?(config?: Record<string, any>): void
+    timeout?(config?: Record<string, any>): void,
+    retry?(config?: DefaultOption): DefaultOption,
 }
 
 // interface ResponseError { }
@@ -64,6 +88,7 @@ class RequestBase {
         baseUrlMap: {},
         handers: {},
         timeout: 3000,
+        retryCount: 3,
         withCredentials: Credentials.default
     }
     public interceptor: Interceptor = {}
@@ -108,7 +133,7 @@ class RequestBase {
         const href = location.href;
         const query = href.substr(href.lastIndexOf('?') + 1);
         const res = query.match(reg);
-        if (res != null) {
+        if (res !== null) {
             return decodeURIComponent(res[2]);
         }
         return undefined;
@@ -243,18 +268,64 @@ class RequestBase {
      */
     private _newFetch(url: string, option: Record<string, any>): Promise<any> {
         const fetchPromise = fetch(url, option);
+        let count = this._defaultOpiotn.retryCount;
+
         const timeoutPromise = new Promise((resolve, reject) => {
             const timer = setTimeout(() => {
                 clearTimeout(timer);
-                if (this.interceptor.timeout) {
-                    this.interceptor.timeout(option);
-                }
+                this.interceptor.timeout && this.interceptor.timeout(option);
                 reject('request timeout');
             }, this._defaultOpiotn.timeout);
         });
-        return Promise.race([fetchPromise, timeoutPromise]).catch(err => {
-            throw new Error(err);
-        });
+
+        // return Promise.race([fetchPromise, timeoutPromise]).catch(err => {
+        //     throw new Error(err);
+        // });
+
+        // const exeFun = (): Promise<any> => {
+        //     return new Promise((resolve, reject) => {
+        //         Promise.race([fetchPromise, timeoutPromise]).then((res) => {
+        //             resolve(res);
+        //         }).catch((err): any => {
+        //             console.log(count);
+        //             if (count) {
+        //                 count--;
+        //                 return exeFun();
+        //             }
+        //             console.log('timeout');
+        //             // throw new Error(err);
+        //             reject(123);
+        //             // resolve('request timeout 123');
+        //         });
+        //     }).catch(err => {
+        //         console.log(err);
+        //         return Promise.reject('request timeout 123');
+        //     });
+        // };
+
+        // return exeFun();
+
+        // 容错Retry
+        const exeFun = (): Promise<any> => {
+            return new Promise((resolve, reject) => {
+                Promise.race([fetchPromise, timeoutPromise]).then((res) => {
+                    resolve(res);
+                }).catch(err => {
+                    reject(err);
+                });
+            }).then(res => {
+                return Promise.resolve(res);
+            }).catch(err => {
+                console.log('testRetry', count);
+                if (count) {
+                    count--;
+                    return exeFun();
+                }
+                return Promise.reject(err);
+            });
+        };
+
+        return exeFun();
     }
 
     public get(urlWithoutDomain: string, data?: any, option: RequestOption = {}): Promise<any> {
@@ -353,6 +424,7 @@ class RequestBase {
      * @memberof RequestBase
      */
     handleResponse(response: Record<string, any>): Promise<any> {
+        console.log(response);
         if (response.status >= 200 && response.status < 300) {
             return response.json();
         }

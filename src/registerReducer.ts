@@ -44,7 +44,7 @@ class RegisterReducer implements RegisterReducerBase {
      *
      * @memberof RegisterReducer
      */
-    public getReducer = () => {
+    public getReducer = (): ReducerCollector => {
         return this.reducerCollector;
     }
 

@@ -3,17 +3,21 @@ import RequestBase from '../net';
 const http = new RequestBase({
     baseUrl: 'http://www.brandf.cn:8010',
     withCredentials: 'include',
-    timeout: 1000
+    timeout: 1,
+    retryCount: 3
 });
 
 export const getConnectorList = (param = { name: 'asdf123', age: 123 }) => {
     return http.post('/article', param, {
-        hander: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
+        // handers: {
+        //     'Content-Type': 'application/x-www-form-urlencoded'
+        // }
     });
 };
 
+// export const getConnectorLists = (param = { name: 'asdf123', age: 123 }) => {
+//     return http.get('/article/all', param);
+// };
 // function animateScroll(num = 100) {
 //     let n = 0;
 //     function step() {

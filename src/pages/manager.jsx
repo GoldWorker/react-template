@@ -33,7 +33,12 @@ export default class Connector extends Component {
     }
 
     componentDidMount() {
-        getConnectorList().then(res => { console.log('res', res); }).catch(err => { console.log('err', err); });
+        getConnectorList()
+            .then(res => {
+                console.log('res', res);
+            }).catch(err => {
+                console.log('err', err);
+            });
     }
 
     handleChangePage = (currentPage) => {

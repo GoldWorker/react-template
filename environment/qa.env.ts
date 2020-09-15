@@ -1,4 +1,4 @@
 module.exports = {
-    "api": "",
-    "env": "qa"
-}
+    'api': '',
+    'env': 'qa'
+};
