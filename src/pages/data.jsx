@@ -3,12 +3,12 @@ import RequestBase from '../net';
 const http = new RequestBase({
     baseUrl: 'http://www.brandf.cn:8010',
     withCredentials: 'include',
-    timeout: 1,
+    timeout: 1000,
     retryCount: 3
 });
 
 export const getConnectorList = (param = { name: 'asdf123', age: 123 }) => {
-    return http.post('/article', param, {
+    return http.put('/article', param, {
         // handers: {
         //     'Content-Type': 'application/x-www-form-urlencoded'
         // }
